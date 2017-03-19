@@ -198,7 +198,7 @@ class Main(QtWidgets.QMainWindow):
                     
                     os.system("iconv -f WINDOWS-1256 -t UTF-8 '"+str(self.IN.text())+"' --output '"+str(self.IN.text())[:-4]+"fixed.srt'")
                     
-                    QMessageBox.question(self,"Completed","Completed\nEnjoy:))\t")
+                    QMessageBox.question(self,"Completed","Completed\nEnjoy:))\t",QMessageBox.Ok)
                     
             elif opt_lst[0]=="dif":
                 
@@ -218,7 +218,7 @@ class Main(QtWidgets.QMainWindow):
                     
                     shutil.move(path,self.out.text())
                     
-                    QMessageBox.question(self,"Completed","Completed\nEnjoy:))\t")
+                    QMessageBox.question(self,"Completed","Completed\nEnjoy:))\t",QMessageBox.Ok)
                     
                     
         
