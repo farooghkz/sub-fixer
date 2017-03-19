@@ -1,0 +1,282 @@
+#!/usr/bin/env python3
+
+# -*- coding: utf-8 -*-
+"""
+Project title  :  Persian Subtitle Fixer Powered By Python3 and PyQt5
+
+"""
+##########################################################################
+###iconv -f WINDOWS-1256 -t UTF-8 subtitle.srt --output newsubtitle.srt###
+##########################################################################
+
+
+#Importing Modules
+
+from PyQt5 import QtWidgets
+from PyQt5.QtWidgets import QAction , QDesktopWidget , QMessageBox , QFileDialog , QLineEdit , QPushButton ,  QRadioButton , QApplication , QGroupBox 
+from PyQt5.QtGui import QIcon
+
+import sys 
+
+import shutil# file manageing
+
+import os#run commands
+
+#about msg
+
+about_msg="""Gnu\\Linux Persian Subtitle Fixer
+
+Powered By Python3 and PyQt5
+
+Copyright (c) 2017
+
+"""
+app = QApplication(sys.argv)
+
+core = QIcon("fileico.ico")
+
+opt_lst = []
+
+class Main(QtWidgets.QMainWindow):
+    
+    def __init__(self):
+        
+        super(Main,self).__init__()
+        
+        self.setWindowTitle("Gnu\\Linux Subtitle Fixer")
+        
+        self.setMaximumSize(350,290)
+        
+        self.setMinimumSize(350,290)
+        
+        self.resize(350,290)
+        
+        self.statusBar()
+        
+        self.center()
+        
+        act1 = QAction(core,"Start",self)
+        
+        act2 = QAction(core,"Exit",self)
+        
+        act3 = QAction(core,"About",self)
+        
+        act1.setStatusTip("Start Converting")
+        
+        act1.setShortcut("Ctrl+S")
+        
+        act1.triggered.connect(self.start)
+        
+        act2.setStatusTip("Exit Application")
+        
+        act2.setShortcut("Ctrl+Q")
+        
+        act2.triggered.connect(sys.exit)
+        
+        act3.setStatusTip("About me")
+        
+        act3.triggered.connect(self.about)
+        
+        menu=self.menuBar()
+        
+        tools_menu=menu.addMenu("&Tools")
+        
+        help_menu=menu.addMenu("&Help")
+        
+        tools_menu.addAction(act1)
+        
+        tools_menu.addAction(act2)
+        
+        help_menu.addAction(act3)
+        
+        box1 = QGroupBox(" Input File ",self)
+        
+        box1.move(5,25)
+        
+        box1.resize(340,100)
+        
+        box2 = QGroupBox(" Output File ",self)
+        
+        box2.move(5,175)
+        
+        box2.resize(340,100)
+        
+        
+        rad1 = QRadioButton("Use The Same Folder For Output",self)
+        
+        rad2 = QRadioButton("Use The Different Folder For Output",self)
+        
+        rad1.move(5,130)
+        
+        rad2.move(5,150)
+        
+        rad1.resize(rad1.sizeHint())
+        
+        rad2.resize(rad2.sizeHint())
+        
+        rad1.clicked.connect(self.on_same)
+        
+        rad2.clicked.connect(self.on_dif)
+        
+        self.IN = QLineEdit(self)
+        
+        self.IN.move(10,65)
+        
+        self.IN.resize(290,25)
+        
+        self.IN.setReadOnly(True)
+        
+        self.IN.setToolTip("Drag input srt file here \nor push browse button to \nchoose input file from filedialog")
+          
+        self.IN.setDragEnabled(True)
+        
+        self.IN.setAcceptDrops(True)
+        
+        b_btn1 = QPushButton("...",self)
+
+        b_btn1.setGeometry(300,65,30,25)        
+        
+        b_btn1.setToolTip("Click to open file dialog")
+        
+        b_btn1.clicked.connect(self.choose_dialog)
+        
+        self.out = QLineEdit(self)
+        
+        self.out.move(10,210)
+        
+        self.out.resize(290,25)
+        
+        self.out.setReadOnly(True)
+        
+        self.out.setToolTip( "Push browse button to \nchoose output file from filedialog")
+        
+        self.b_btn2= QPushButton("...",self)
+
+        self.b_btn2.setGeometry(300,210,30,25)        
+        
+        self.b_btn2.setToolTip("Click to open file dialog")
+        
+        self.b_btn2.clicked.connect(self.save_dialog)
+        
+        self.out.setDisabled(True)
+        
+        self.b_btn2.setDisabled(True)
+        
+
+
+
+        
+    def choose_dialog(self,event):
+        
+        Dialog_Frame = QFileDialog.getOpenFileName(self,"Choose your input file","/home","SRT Subtitle Files (*.srt)")
+        print(str(Dialog_Frame[0]))
+        
+        self.IN.setText(str(Dialog_Frame[0]))
+    
+    def save_dialog(self,event):
+        
+        Dialog_Frame = QFileDialog.getSaveFileName(self,"Choose your input file","/home","SRT Subtitle Files (*.srt)")
+        
+        self.out.setText(str(Dialog_Frame[0]))
+
+        
+    def start(self,event):
+        
+        if len(opt_lst)==0:
+            
+            QMessageBox.warning(self,"Warning","Choose Option First\t")
+        
+        else :
+            
+            if opt_lst[0]=="same":
+                
+                if self.IN.text=="":
+                    
+                    QMessageBox.warning(self,"Warning","No input file\t")
+                    
+                else:
+                    
+                    os.system("iconv -f WINDOWS-1256 -t UTF-8 '"+str(self.IN.text())+"' --output '"+str(self.IN.text())[:-4]+"fixed.srt'")
+                    
+                    QMessageBox.question(self,"Completed","Completed\nEnjoy:))\t")
+                    
+            elif opt_lst[0]=="dif":
+                
+                if self.IN.text=="":
+                    
+                    QMessageBox.warning(self,"Warning","No input file\t")
+                    
+                elif self.out.text()=="":
+                    
+                    QMessageBox.warning(self,"Warning","No output file\t")
+                    
+                else : 
+                    
+                    path=str(self.IN.text())[:-4]+"fixed.srt"
+                    
+                    os.system("iconv -f WINDOWS-1256 -t UTF-8 '"+str(self.IN.text())+"' --output '"+path+"'")
+                    
+                    shutil.move(path,self.out.text())
+                    
+                    QMessageBox.question(self,"Completed","Completed\nEnjoy:))\t")
+                    
+                    
+        
+    def about(self,event):
+        
+        QMessageBox.about(self,"About",about_msg)   
+        
+        
+    def center(self):
+        
+        qr = self.frameGeometry()
+        
+        cp = QDesktopWidget().availableGeometry().center()
+        
+        qr.moveCenter(cp)
+        
+        self.move(qr.topLeft())
+    
+    def on_same(self,event):
+        
+        del opt_lst[:]
+        
+        opt_lst.append("same")
+        
+        self.out.setDisabled(True)
+        
+        self.b_btn2.setDisabled(True)
+    
+    def on_dif(self,event):
+        
+        del opt_lst[:]
+        
+        opt_lst.append("dif")
+        
+        self.out.setEnabled(True)
+        
+        self.b_btn2.setEnabled(True)
+        
+MainWin=Main()
+
+
+if len(sys.argv) in [0,1]:
+    pass
+
+else:
+    try:
+        print ("WARNING\nDon't try to use another folder for output in Console using")
+        open(sys.argv[1])
+        os.system("iconv -f WINDOWS-1256 -t UTF-8 '"+sys.argv[1]+"' --output '"+sys.argv[2])
+
+        exit()
+    except IOError as e:
+        print (e)
+    except IndexError:
+        print ("Need 2 argument , 1 given ")
+    
+MainWin.show()
+
+MainWin.setWindowIcon(core)
+
+sys.exit(app.exec_())  
