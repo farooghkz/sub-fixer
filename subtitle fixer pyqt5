@@ -3,7 +3,7 @@
 # -*- coding: utf-8 -*-
 """
 Project title  :  Persian Subtitle Fixer Powered By Python3 and PyQt5
-
+Created By AmirReza
 """
 ##########################################################################
 ###iconv -f WINDOWS-1256 -t UTF-8 subtitle.srt --output newsubtitle.srt###
@@ -27,7 +27,7 @@ import os#run commands
 about_msg="""Gnu\\Linux Persian Subtitle Fixer
 
 Powered By Python3 and PyQt5
-
+Created By AmirReza
 Copyright (c) 2017
 
 """
